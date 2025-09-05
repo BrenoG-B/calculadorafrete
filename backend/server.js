@@ -1,53 +1,51 @@
-//importando os modulos
+
+//importando os módulos
 const express = require("express");
 const cors = require("cors")
 
-//criando a instancia da alicação
+//criando a instancia da aplicação
 const app = express();
-
-//definir a porta em q o servidor vai rodar
-
-const port = 3001;
 //configura o express para analisar requisições no corpo da pagina no formato JSON
-app.use(express());
-//habilita o Cors para todas as rotas da aplicação, permitindo acesso a outros dominios
+app.use(express.json());
+//habilita o CORS para todas as rotas da aplicação, permitindo acesso de outros dominios
 app.use(cors());
+//define a porta em que o servidor vai rodar
+const port = 3001;
 
-//criando o objeto que servira como tabela
 
-const precos ={
-    bicicleta:1.10, //preço por km
-    moto:1.50, //preço por km
-    drone:2.50 //preço por km
-}
+//criando o objeto que servirá como tabela
 
+const precos={
+    bicicleta:1.10, //Preço por KM para bike
+    moto:1.50, //Preço por KM para moto
+    drone:2.50 //Preço por KM para drone
+};
+    
 //criando a função para rota calcular frete
-app.post("/calcularfrete",(req,res)=>{
-    //desesrutura o corpo da requisição para extrair dados
-    const{distancia,tipoTransporte} = req.body
+app.post("/calcularfrete", (req, res)=>{
+    // desestrutura o corpo da requisição para extrair os dados
+    const {distancia, tipoTransporte} = req.body;
 
-    //verifica se distancia ou tipo de transporte não forem validos na requisição
+    // verifica se distancia ou tipo de transporte não forem validos na requisição
 
-    if (distancia === undefined || tipoTransporte === undefined){
-        return res.status(400).json({error:"Distancia e tipo de transporte são obrigatórios"})
-
+    if(distancia === undefined || tipoTransporte === undefined){
+        return res.status(400).json({error:"distancia e tipo de transporte são obrigratórios"})
     }
-
-    const precoPorKm = [tipoTransporte.toLowerCase()];
+    // Busca o preço por km no objeto "precos" convertendo o tipo de transport para minúsculas.
+    const precoPorKm = precos[tipoTransporte.toLowerCase()];
 
     if(precoPorKm === undefined){
-        return res.status(400).json({error:"Tipo de transporte invalido"})
+          return res.status(400).json({error:"tipo de transporte inválido"})
     }
-    //calculo para o valor total do frete
-    const valorTotal = distancia * precoPorKm;
+    // calculo para o valor total do frete 
+    const valorTotal= distancia * precoPorKm;
 
-    //enviar a resposta como obj JSON e formato para trazer apenas duas casas decimais
+    //Envia a resposta como objeto json e formato para trazer apenas 2 casas decimais
     res.json({valorTotal: valorTotal.toFixed(2)})
 })
 
 
-
-//iniciando servidor para que possa escutar as requisiçoes
+//Iniciando o servidor para que possa escutar as requisições
 app.listen(port,()=>{
     console.log("servidor rodando na porta https://localhost:3001")
 })

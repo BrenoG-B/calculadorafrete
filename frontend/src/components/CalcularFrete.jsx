@@ -1,14 +1,13 @@
 import { useState } from "react"
 
-
 const CalcularFrete = () => {
 
     // HOOK - useState- manipula o estado da variável
-    const [distancia,setDistancia]=useState("");
-    const [tipoTransporte, setTipoTransporte]=useState("bicicleta");
-    const [valorFrete, setValorFrete]=useState(null);
-    const [loading,setLoading]=useState(false);
-    const [error, setError]=useState(null);
+    const [distancia,setDistancia]= useState("");
+    const [tipoTransporte, setTipoTransporte]= useState("bicicleta");
+    const [valorFrete, setValorFrete]= useState(null);
+    const [loading,setLoading]= useState(false);
+    const [error, setError]= useState(null);
 
     // criando a função que vai pegar a api do servidor 
     const handleSubmit = async (e)=>{
@@ -19,12 +18,12 @@ const CalcularFrete = () => {
 
         // traamento de erro
         try{
-            const response = await fetch("http://localhost:3001/calcularfrete",{
-                method:"POST",
-                headers:{
-                    'Content-Type':'application/json',
+            const response = await fetch("http://localhost:3001/calcularfrete", {
+                method:"post",
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({distancia:parseFloat(distancia),tipoTransporte}),
+                body: JSON.stringify({distancia:parseFloat(distancia), tipoTransporte }),
             });
 
             // validando a requisição
@@ -34,10 +33,10 @@ const CalcularFrete = () => {
             }
 
             const data = await response.json();
-            setValorFrete(data.valorFrete)
+            setValorFrete(data.valorTotal)
         }
         catch(error){
-            setError(error)
+            setError(error.message)
         }
         finally{
             setLoading(false)
